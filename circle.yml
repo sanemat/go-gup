@@ -7,3 +7,12 @@ test:
 general:
   artifacts:
     - "pkg"
+deployment:
+  release:
+    tag: /[0-9]+(\.[0-9]+)*/
+    commands:
+      - go run script/release.go
+  pre-release:
+    branch: master
+    commands:
+      - go run script/release.go -pre
