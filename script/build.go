@@ -5,6 +5,7 @@ import (
 	"log"
 	"os/exec"
 	"fmt"
+	"os"
 )
 
 func goGetGox() {
@@ -16,6 +17,12 @@ func goGetGox() {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func rmRfPkg() {
+	if err := os.RemoveAll("pkg"); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -56,6 +63,7 @@ func goxRun() {
 }
 
 func main() {
+	rmRfPkg()
 	goGetGox()
 	goxRun()
 }
