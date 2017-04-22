@@ -1,0 +1,3 @@
+compile:
+  override:
+    - go run script/build.go
