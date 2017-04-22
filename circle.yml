@@ -1,0 +1,9 @@
+compile:
+  override:
+    - go run script/build.go
+test:
+  override:
+    - exit 0
+general:
+  artifacts:
+    - "pkg"
