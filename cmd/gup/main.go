@@ -3,9 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 )
 
 var version = "0.1.0"
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
 
 func main() {
 	var showVersion bool
@@ -16,4 +21,10 @@ func main() {
 		fmt.Println(version)
 		return
 	}
+	var listeningAddr = ":8080"
+	var listeningHost = "localhost"
+	fmt.Printf("* Listening on http://%s%s\n", listeningHost, listeningAddr)
+	fmt.Print("Use Ctrl-C to stop\n")
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(listeningAddr, nil)
 }
