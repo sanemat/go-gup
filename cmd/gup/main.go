@@ -3,13 +3,28 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 var version = "0.1.0"
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	name := filepath.Join(cwd, filepath.Base(r.URL.Path))
+	f, err := os.Open(name)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	defer f.Close()
+	io.Copy(w, f)
 }
 
 func main() {
