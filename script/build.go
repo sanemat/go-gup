@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"os/exec"
+	"fmt"
 )
 
 func goGetGox() {
@@ -19,6 +20,20 @@ func goGetGox() {
 	}
 }
 
+func getVersion() string {
+	cmd := exec.Command(
+		"git",
+		"describe",
+		"--tags",
+	)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+	return out.String();
+}
+
 func goxRun() {
 	goxPath, err := exec.LookPath("gox")
 	if err != nil {
@@ -28,6 +43,8 @@ func goxRun() {
 		goxPath,
 		"-output",
 		"pkg/{{.OS}}_{{.Arch}}/{{.Dir}}",
+		"-ldflags",
+		"-X main.version=" + getVersion(),
 		"./cmd/gup",
 	)
 	var out bytes.Buffer
@@ -35,6 +52,7 @@ func goxRun() {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print(out.String())
 }
 
 func main() {
