@@ -9,33 +9,6 @@ import (
 	"strings"
 )
 
-func GoGetGhg() error {
-	goPath, err := exec.LookPath("go")
-	if err != nil {
-		return err
-	}
-	cmd := exec.Command(goPath, "get", "github.com/Songmu/ghg/cmd/ghg")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
-}
-func LookOrInstall() (string, error) {
-	ghgPath, err := exec.LookPath("ghg")
-	if err != nil {
-		if err := GoGetGhg(); err != nil {
-			return "", err
-		} else {
-			ghgPath, err = exec.LookPath("ghg")
-			if err != nil {
-				return "", err
-			}
-		}
-	}
-	return ghgPath, nil
-}
 func GhgGet(target string) error {
 	ghgPath, err := exec.LookPath("ghg")
 	if err != nil {
