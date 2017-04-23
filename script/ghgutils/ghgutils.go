@@ -35,12 +35,12 @@ func LookOrInstall() (string, error) {
 	}
 	return ghgPath, nil
 }
-func GhgGetGhr() error {
+func GhgGet(target string) error {
 	ghgPath, err := exec.LookPath("ghg")
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command(ghgPath, "get", "tcnksm/ghr")
+	cmd := exec.Command(ghgPath, "get", target)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
@@ -61,7 +61,7 @@ func GhgLookOrGetGhr() (string, error) {
 	}
 	ghrPath := filepath.Join(strings.TrimSpace(out.String()), "ghr")
 	if _, err := os.Stat(ghrPath); os.IsNotExist(err) {
-		if err := GhgGetGhr(); err != nil {
+		if err := GhgGet("tcnksm/ghr"); err != nil {
 			return "", err
 		}
 		if _, err := os.Stat(ghrPath); os.IsNotExist(err) {

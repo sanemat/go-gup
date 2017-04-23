@@ -59,7 +59,7 @@ func main() {
 	if err := ghgutils.GoGetGhg(); err != nil {
 		log.Fatal(err)
 	}
-	if err := ghgutils.GhgGetGhr(); err != nil {
+	if err := ghgutils.GhgGet("tcnksm/ghr"); err != nil {
 		log.Fatal(err)
 	}
 	runGhr(pre)
