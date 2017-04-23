@@ -75,14 +75,20 @@ func runGhr(pre bool) {
 		cmd = exec.Command(
 			ghrPath,
 			"-prerelease",
-			"-debug",
+			"-u",
+			"sanemat",
+			"-r",
+			"go-gup",
 			version,
 			"pkg/",
 		)
 	} else {
 		cmd = exec.Command(
 			ghrPath,
-			"-debug",
+			"-u",
+			"sanemat",
+			"-r",
+			"go-gup",
 			version,
 			"pkg/",
 		)
@@ -91,7 +97,7 @@ func runGhr(pre bool) {
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
 		log.Print(out.String())
-		log.Panic(err)
+		log.Fatal(err)
 	}
 	fmt.Print(out.String())
 }

@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 )
 
 func getVersion1() (string, error) {
@@ -20,7 +22,7 @@ func getVersion1() (string, error) {
 		log.Fatal(err)
 		return "", err
 	}
-	return out.String(), nil
+	return strings.TrimSpace(out.String()), nil
 }
 
 func goGetGox() {
@@ -54,7 +56,7 @@ func goxRun() {
 	cmd := exec.Command(
 		goxPath,
 		"-output",
-		"pkg/{{.OS}}_{{.Arch}}/{{.Dir}}",
+		filepath.Join("pkg", version, "{{.Dir}}_" + version+ "_{{.OS}}_{{.Arch}}", "{{.Dir}}"),
 		"-ldflags",
 		"-X main.version="+version,
 		"./cmd/gup",
