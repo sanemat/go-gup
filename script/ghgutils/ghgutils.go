@@ -9,13 +9,13 @@ import (
 	"strings"
 )
 
-func GhgGet(target string) error {
+func GhgGet(githubUserRepo string) error {
 	ghgPath, err := exec.LookPath("ghg")
 	if err != nil {
 		log.Panic(err)
 		return err
 	}
-	cmd := exec.Command(ghgPath, "get", target)
+	cmd := exec.Command(ghgPath, "get", githubUserRepo)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
@@ -24,7 +24,7 @@ func GhgGet(target string) error {
 	}
 	return nil
 }
-func GhgLookOrGetGhr() (string, error) {
+func GhgLookOrGet(commandName string, githubUserRepo string) (string, error) {
 	ghgPath, err := exec.LookPath("ghg")
 	if err != nil {
 		return "", err
@@ -35,16 +35,19 @@ func GhgLookOrGetGhr() (string, error) {
 	if err := cmd.Run(); err != nil {
 		return "", err
 	}
-	ghrPath := filepath.Join(strings.TrimSpace(out.String()), "ghr")
-	if _, err := os.Stat(ghrPath); os.IsNotExist(err) {
-		if err := GhgGet("tcnksm/ghr"); err != nil {
+	targetPath := filepath.Join(strings.TrimSpace(out.String()), commandName)
+	if _, err := os.Stat(targetPath); os.IsNotExist(err) {
+		if err := GhgGet(githubUserRepo); err != nil {
 			return "", err
 		}
-		if _, err := os.Stat(ghrPath); os.IsNotExist(err) {
+		if _, err := os.Stat(targetPath); os.IsNotExist(err) {
 			return "", err
 		}
 	}
-	return ghrPath, nil
+	return targetPath, nil
+}
+func GhgLookOrGetGhr() (string, error) {
+	return GhgLookOrGet("ghr", "tcnksm/ghr")
 }
 
 func GhgLookOrGetGox() (string, error) {
