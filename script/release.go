@@ -8,6 +8,7 @@ import (
 	"log"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func getVersion2() (string, error) {
@@ -21,7 +22,7 @@ func getVersion2() (string, error) {
 	if err := cmd.Run(); err != nil {
 		return "", errors.New("It does not detect git describe.")
 	}
-	return out.String(), nil
+	return strings.TrimSpace(out.String()), nil
 }
 
 func goGetGhg() {
