@@ -1,6 +1,6 @@
 compile:
   override:
-    - go run script/build.go
+    - go run script/build/build.go
 test:
   override:
     - exit 0
@@ -11,8 +11,8 @@ deployment:
   release:
     tag: /[0-9]+(\.[0-9]+)*/
     commands:
-      - go run script/release.go
+      - go run script/release/release.go
   pre-release:
     branch: master
     commands:
-      - go run script/release.go -pre
+      - go run script/release/release.go -pre

@@ -41,11 +41,23 @@ func runGhr(pre bool) {
 	}
 	fmt.Print(out.String())
 }
+func circleCIWithTag() (bool, error) {
+	return false, nil
+}
 
 func main() {
 	var pre bool
 	flag.BoolVar(&pre, "pre", false, "pre release")
 	flag.Parse()
+
+	avoidBuild, err := circleCIWithTag()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if pre && avoidBuild {
+		return
+	}
+
 	if err := gogetutils.GoGet("github.com/Songmu/ghg/cmd/ghg"); err != nil {
 		log.Fatal(err)
 	}
