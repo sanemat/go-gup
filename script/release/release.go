@@ -7,9 +7,17 @@ import (
 	"log"
 	"os/exec"
 
+	"os"
+
 	"github.com/sanemat/go-gup/script/ghgutils"
 	"github.com/sanemat/go-gup/script/gitdescribetags"
 	"github.com/sanemat/go-gup/script/gogetutils"
+)
+
+const (
+	EnvCI             = "CI"
+	EnvCircleCi       = "CIRCLECI"
+	EnvCircleCiForTag = "CIRCLE_TAG"
 )
 
 func runGhr(pre bool) {
@@ -41,8 +49,10 @@ func runGhr(pre bool) {
 	}
 	fmt.Print(out.String())
 }
-func circleCIWithTag() (bool, error) {
-	return false, nil
+func circleCIBuildForTag() (bool, error) {
+	gitTag := os.Getenv(EnvCircleCiForTag)
+	buildForTag := gitTag != nil && gitTag != ""
+	return buildForTag, nil
 }
 
 func main() {
@@ -50,11 +60,11 @@ func main() {
 	flag.BoolVar(&pre, "pre", false, "pre release")
 	flag.Parse()
 
-	avoidBuild, err := circleCIWithTag()
+	circleCiBuildForTag, err := circleCIBuildForTag()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if pre && avoidBuild {
+	if pre && circleCiBuildForTag {
 		return
 	}
 
