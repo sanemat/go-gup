@@ -23,10 +23,11 @@ func goGetGox() {
 	}
 }
 
-func rmRfPkg() {
+func rmRfPkg() error {
 	if err := os.RemoveAll("pkg"); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func goxRun() {
@@ -55,7 +56,9 @@ func goxRun() {
 }
 
 func main() {
-	rmRfPkg()
+	if err := rmRfPkg(); err != nil {
+		log.Fatal(err)
+	}
 	goGetGox()
 	goxRun()
 }
