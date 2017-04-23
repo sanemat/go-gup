@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/sanemat/go-gup/script/ghgutils"
-	"github.com/sanemat/go-gup/script/gitdescribetags"
 	"log"
 	"os/exec"
+
+	"github.com/sanemat/go-gup/script/ghgutils"
+	"github.com/sanemat/go-gup/script/gitdescribetags"
+	"github.com/sanemat/go-gup/script/gogetutils"
 )
 
 func runGhr(pre bool) {
-	ghrPath, err := ghgutils.GhgLookOrGetGhr()
+	ghrPath, err := ghgutils.GhgLookOrGet("ghr", "tcnksm/ghr")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +58,7 @@ func main() {
 	var pre bool
 	flag.BoolVar(&pre, "pre", false, "pre release")
 	flag.Parse()
-	if err := ghgutils.GoGetGhg(); err != nil {
+	if err := gogetutils.GoGet("github.com/Songmu/ghg/cmd/ghg"); err != nil {
 		log.Fatal(err)
 	}
 	if err := ghgutils.GhgGet("tcnksm/ghr"); err != nil {
