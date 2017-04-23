@@ -81,7 +81,7 @@ func runGhr(pre bool) {
 			"-r",
 			"go-gup",
 			version,
-			"pkg/",
+			"./pkg/",
 		)
 	} else {
 		cmd = exec.Command(
@@ -91,7 +91,7 @@ func runGhr(pre bool) {
 			"-r",
 			"go-gup",
 			version,
-			"pkg/",
+			"./pkg/",
 		)
 	}
 	var out bytes.Buffer
