@@ -51,7 +51,7 @@ func runGhr(pre bool) {
 }
 func circleCIBuildForTag() (bool, error) {
 	gitTag := os.Getenv(EnvCircleCiForTag)
-	buildForTag := gitTag != nil && gitTag != ""
+	buildForTag := gitTag != ""
 	return buildForTag, nil
 }
 
