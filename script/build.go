@@ -3,12 +3,13 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/sanemat/go-gup/script/ghgutils"
-	"github.com/sanemat/go-gup/script/gitdescribetags"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/sanemat/go-gup/script/gitdescribetags"
+	"github.com/sanemat/go-gup/script/gogetutils"
 )
 
 func rmRfPkg() error {
@@ -19,7 +20,7 @@ func rmRfPkg() error {
 }
 
 func goxRun() error {
-	goxPath, err := ghgutils.GhgLookOrGetGox()
+	goxPath, err := gogetutils.LookOrInstall("gox", "github.com/mitchellh/gox")
 	if err != nil {
 		return err
 	}
@@ -46,19 +47,12 @@ func goxRun() error {
 
 func main() {
 	if err := rmRfPkg(); err != nil {
-		log.Panic(err)
 		log.Fatal(err)
 	}
-	if err := ghgutils.GoGetGhg(); err != nil {
-		log.Panic(err)
-		log.Fatal(err)
-	}
-	if err := ghgutils.GhgGet("mitchellh/gox"); err != nil {
-		log.Panic(err)
+	if _, err := gogetutils.LookOrInstall("gox", "github.com/mitchellh/gox"); err != nil {
 		log.Fatal(err)
 	}
 	if err := goxRun(); err != nil {
-		log.Panic(err)
 		log.Fatal(err)
 	}
 }
