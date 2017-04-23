@@ -1,8 +1,8 @@
 package gitdescribetags
 
 import (
-	"os/exec"
 	"bytes"
+	"os/exec"
 	"strings"
 )
 
