@@ -2,28 +2,13 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"os/exec"
 	"path/filepath"
-	"strings"
+	"github.com/sanemat/go-gup/script/gitdescribetags"
 )
-
-func getVersion2() (string, error) {
-	cmd := exec.Command(
-		"git",
-		"describe",
-		"--tags",
-	)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		return "", errors.New("It does not detect git describe.")
-	}
-	return strings.TrimSpace(out.String()), nil
-}
 
 func goGetGhg() {
 	goPath, err := exec.LookPath("go")
@@ -66,7 +51,7 @@ func getGhrPath() string {
 }
 func runGhr(pre bool) {
 	ghrPath := getGhrPath()
-	version, err := getVersion2()
+	version, err := gitdescribetags.Get()
 	if err != nil {
 		log.Fatal(err)
 	}
