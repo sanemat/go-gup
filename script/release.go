@@ -4,53 +4,17 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/sanemat/go-gup/script/ghgutils"
+	"github.com/sanemat/go-gup/script/gitdescribetags"
 	"log"
 	"os/exec"
-	"path/filepath"
-	"github.com/sanemat/go-gup/script/gitdescribetags"
 )
 
-func goGetGhg() {
-	goPath, err := exec.LookPath("go")
-	if err != nil {
-		log.Fatal(err)
-	}
-	cmd := exec.Command(goPath, "get", "github.com/Songmu/ghg/cmd/ghg")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
-	}
-}
-func ghgGetGhr() {
-	ghgPath, err := exec.LookPath("ghg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	cmd := exec.Command(ghgPath, "get", "tcnksm/ghr")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func getGhrPath() string {
-	//$(ghg bin)/ghr
-	ghgPath, err := exec.LookPath("ghg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	cmd := exec.Command(ghgPath, "bin")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
-	}
-	return filepath.Join(out.String(), "ghr")
-}
 func runGhr(pre bool) {
-	ghrPath := getGhrPath()
+	ghrPath, err := ghgutils.GhgLookOrGetGhr()
+	if err != nil {
+		log.Fatal(err)
+	}
 	version, err := gitdescribetags.Get()
 	if err != nil {
 		log.Fatal(err)
@@ -92,7 +56,11 @@ func main() {
 	var pre bool
 	flag.BoolVar(&pre, "pre", false, "pre release")
 	flag.Parse()
-	goGetGhg()
-	ghgGetGhr()
+	if err := ghgutils.GoGetGhg(); err != nil {
+		log.Fatal(err)
+	}
+	if err := ghgutils.GhgGetGhr(); err != nil {
+		log.Fatal(err)
+	}
 	runGhr(pre)
 }
