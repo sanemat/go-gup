@@ -23,40 +23,33 @@ func getVersion1() (string, error) {
 	return out.String(), nil
 }
 
-func goGetGox() error {
+func goGetGox() {
 	goPath, err := exec.LookPath("go")
 	if err != nil {
 		log.Fatal(err)
-		return err
 	}
 	cmd := exec.Command(goPath, "get", "github.com/mitchellh/gox")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
-		return err
 	}
-	return nil
 }
 
-func rmRfPkg() error {
+func rmRfPkg() {
 	if err := os.RemoveAll("pkg"); err != nil {
 		log.Fatal(err)
-		return err
 	}
-	return nil
 }
 
-func goxRun() error {
+func goxRun() {
 	goxPath, err := exec.LookPath("gox")
 	if err != nil {
 		log.Fatal(err)
-		return err
 	}
 	version, err := getVersion1()
 	if err != nil {
 		log.Fatal(err)
-		return err
 	}
 	cmd := exec.Command(
 		goxPath,
@@ -70,10 +63,8 @@ func goxRun() error {
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
-		return err
 	}
 	fmt.Print(out.String())
-	return nil
 }
 
 func main() {
