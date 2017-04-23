@@ -5,10 +5,6 @@ import (
 	"os/exec"
 )
 
-func GoGetGhg() error {
-	return GoGet("github.com/Songmu/ghg/cmd/ghg")
-}
-
 func GoGet(packagePath string) error {
 	goPath, err := exec.LookPath("go")
 	if err != nil {

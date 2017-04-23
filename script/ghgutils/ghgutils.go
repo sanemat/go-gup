@@ -46,29 +46,3 @@ func GhgLookOrGet(commandName string, githubUserRepo string) (string, error) {
 	}
 	return targetPath, nil
 }
-func GhgLookOrGetGhr() (string, error) {
-	return GhgLookOrGet("ghr", "tcnksm/ghr")
-}
-
-func GhgLookOrGetGox() (string, error) {
-	ghgPath, err := exec.LookPath("ghg")
-	if err != nil {
-		return "", err
-	}
-	cmd := exec.Command(ghgPath, "bin")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	if err := cmd.Run(); err != nil {
-		return "", err
-	}
-	goxPath := filepath.Join(strings.TrimSpace(out.String()), "gox")
-	if _, err := os.Stat(goxPath); os.IsNotExist(err) {
-		if err := GhgGet("mitchellh/gox"); err != nil {
-			return "", err
-		}
-		if _, err := os.Stat(goxPath); os.IsNotExist(err) {
-			return "", err
-		}
-	}
-	return goxPath, nil
-}
