@@ -22,29 +22,17 @@ func runGhr(pre bool) {
 		log.Fatal(err)
 	}
 
-	var cmd *exec.Cmd
-	if pre {
-		cmd = exec.Command(
-			ghrPath,
-			"-prerelease",
-			"-u",
-			"sanemat",
-			"-r",
-			"go-gup",
-			version,
-			"./pkg/",
-		)
-	} else {
-		cmd = exec.Command(
-			ghrPath,
-			"-u",
-			"sanemat",
-			"-r",
-			"go-gup",
-			version,
-			"./pkg/",
-		)
+	params := []string{
+		"-u",
+		"sanemat",
+		"-r",
+		"go-gup",
 	}
+	if pre {
+		params = append(params, "-prerelease")
+	}
+	params = append(params, version, "./pkg/")
+	cmd := exec.Command(ghrPath, params...)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
