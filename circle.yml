@@ -21,6 +21,6 @@ general:
     - "pkg"
 deployment:
   release:
-    tag: /[0-9]+(\.[0-9]+)*/
+    tag: /v[0-9]+(\.[0-9]+)*/
     commands:
       - go run script/release/release.go
