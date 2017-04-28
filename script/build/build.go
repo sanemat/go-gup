@@ -13,7 +13,11 @@ import (
 )
 
 func rmRfPkg() error {
-	if err := os.RemoveAll("pkg"); err != nil {
+	version, err := gitdescribetags.Get()
+	if err != nil {
+		return err
+	}
+	if err := os.RemoveAll(filepath.Join("pkg", version)); err != nil {
 		return err
 	}
 	return nil

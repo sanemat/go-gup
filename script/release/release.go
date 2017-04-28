@@ -39,7 +39,7 @@ func runGhr(pre bool) {
 	if pre {
 		params = append(params, "-prerelease")
 	}
-	params = append(params, version, "./pkg/")
+	params = append(params, version, "./pkg/"+version)
 	cmd := exec.Command(ghrPath, params...)
 	var out bytes.Buffer
 	cmd.Stdout = &out
