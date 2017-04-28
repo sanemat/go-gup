@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-var version = "v0.1.2"
+var version = "v0.1.3"
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	cwd, err := os.Getwd()
