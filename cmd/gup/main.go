@@ -24,7 +24,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	name := filepath.Join(cwd, filepath.Base(r.URL.Path))
+	name := filepath.Join(cwd, r.URL.Path)
 	f, err := os.Open(name)
 	if err != nil {
 		http.NotFound(w, r)
