@@ -4,13 +4,26 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 var version = "v0.1.3"
+
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.DebugLevel)
+}
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	cwd, err := os.Getwd()
@@ -25,6 +38,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 	io.Copy(w, f)
+}
+
+func Log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.WithFields(log.Fields{
+			"RemoteAddr": r.RemoteAddr,
+			"Method": r.Method,
+			"URL": r.URL,
+			"Header": r.Header,
+		}).Info("Access")
+
+		handler.ServeHTTP(w, r)
+	})
 }
 
 func main() {
@@ -42,5 +68,5 @@ func main() {
 	fmt.Printf("* Listening on http://%s%s\n", listeningHost, listeningAddr)
 	fmt.Print("Use Ctrl-C to stop\n")
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(listeningAddr, nil)
+	http.ListenAndServe(listeningAddr, Log(http.DefaultServeMux))
 }
