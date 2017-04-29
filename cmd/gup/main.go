@@ -14,14 +14,8 @@ import (
 var version = "v0.1.3"
 
 func init() {
-	// Log as JSON instead of the default ASCII formatter.
 	log.SetFormatter(&log.JSONFormatter{})
-
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
 	log.SetOutput(os.Stdout)
-
-	// Only log the warning severity or above.
 	log.SetLevel(log.DebugLevel)
 }
 
@@ -30,7 +24,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	name := filepath.Join(cwd, filepath.Base(r.URL.Path))
+	name := filepath.Join(cwd, r.URL.Path)
 	f, err := os.Open(name)
 	if err != nil {
 		http.NotFound(w, r)
