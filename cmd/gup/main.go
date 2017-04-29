@@ -22,7 +22,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above.
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.DebugLevel)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +40,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	io.Copy(w, f)
 }
 
+func Log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.WithFields(log.Fields{
+			"RemoteAddr": r.RemoteAddr,
+			"Method": r.Method,
+			"URL": r.URL,
+			"Header": r.Header,
+		}).Info("Access")
+
+		handler.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	var showVersion bool
 	var listeningAddr = ":8080"
@@ -55,5 +68,5 @@ func main() {
 	fmt.Printf("* Listening on http://%s%s\n", listeningHost, listeningAddr)
 	fmt.Print("Use Ctrl-C to stop\n")
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(listeningAddr, nil)
+	http.ListenAndServe(listeningAddr, Log(http.DefaultServeMux))
 }
