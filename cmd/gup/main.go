@@ -11,7 +11,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-var version = "v0.1.3"
+var version = "v0.1.4"
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
