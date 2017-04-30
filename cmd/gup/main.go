@@ -51,6 +51,7 @@ func main() {
 	var showVersion bool
 	var listeningAddr = ":8080"
 	var listeningHost = "localhost"
+	var protcol = "https"
 
 	flag.BoolVar(&showVersion, "v", false, "show version")
 	flag.BoolVar(&showVersion, "version", false, "show version")
@@ -59,8 +60,8 @@ func main() {
 		fmt.Println(version)
 		return
 	}
-	fmt.Printf("* Listening on http://%s%s\n", listeningHost, listeningAddr)
+	fmt.Printf("* Listening on %s://%s%s\n", protcol, listeningHost, listeningAddr)
 	fmt.Print("Use Ctrl-C to stop\n")
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(listeningAddr, Log(http.DefaultServeMux))
+	http.ListenAndServeTLS(listeningAddr, "server.crt", "server.key", Log(http.DefaultServeMux))
 }
