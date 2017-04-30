@@ -51,16 +51,30 @@ func main() {
 	var showVersion bool
 	var listeningAddr = ":8080"
 	var listeningHost = "localhost"
+	var protocol string
 
 	flag.BoolVar(&showVersion, "v", false, "show version")
 	flag.BoolVar(&showVersion, "version", false, "show version")
+	flag.StringVar(&protocol, "protocol", "http", "protocol")
 	flag.Parse()
 	if showVersion {
 		fmt.Println(version)
 		return
 	}
-	fmt.Printf("* Listening on http://%s%s\n", listeningHost, listeningAddr)
+	fmt.Printf("* Listening on %s://%s%s\n", protocol, listeningHost, listeningAddr)
 	fmt.Print("Use Ctrl-C to stop\n")
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(listeningAddr, Log(http.DefaultServeMux))
+	if protocol == "https" {
+		//# Key considerations for algorithm "RSA" ≥ 2048-bit
+		//openssl genrsa -out server.key 2048
+		//
+		//# Key considerations for algorithm "ECDSA" ≥ secp384r1
+		//# List ECDSA the supported curves (openssl ecparam -list_curves)
+		//openssl ecparam -genkey -name secp384r1 -out server.key
+		//
+		//openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650  -subj "/CN=localhost"
+		http.ListenAndServeTLS(listeningAddr, "server.crt", "server.key", Log(http.DefaultServeMux))
+	} else {
+		http.ListenAndServe(listeningAddr, Log(http.DefaultServeMux))
+	}
 }
